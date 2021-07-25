@@ -3,8 +3,14 @@ const app = express();
 const socketio = require('socket.io')
 
 let namespaces = require('./data/namespaces');
-app.use(express.static(__dirname + './public/chat.html'));
-const expressServer = app.listen(9000);
+app.use(express.static(__dirname + '/public'));
+
+const port = process.env.PORT || 9000;
+
+expressServer = app.listen(port, '0.0.0.0', () => {
+    console.log('El servidor esta funcionando en port ', port);
+});
+
 const io = socketio(expressServer);
 
 
@@ -28,10 +34,10 @@ io.on('connection', (socket) => {
 
 // loop through each namespace and listen for a connection
 namespaces.forEach((namespace) => {
-    console.log('namespace es : ', namespace)
-        // const thisNs = io.of(namespace.endpoint)
+    // console.log('namespace es : ', namespace)
+    // const thisNs = io.of(namespace.endpoint)
     io.of(namespace.endpoint).on('connection', (nsSocket) => {
-        console.log(nsSocket.handshake)
+        // console.log(nsSocket.handshake)
         const username = nsSocket.handshake.query.username;
         // console.log(`${nsSocket.id} has join ${namespace.endpoint}`)
         // a socket has connected to one of our chatgroup namespaces.
@@ -39,7 +45,7 @@ namespaces.forEach((namespace) => {
         nsSocket.emit('nsRoomLoad', namespace.rooms)
         nsSocket.on('joinRoom', (roomToJoin, numberOfUsersCallback) => {
             // deal with history... once we have it
-            console.log(nsSocket.rooms);
+            // console.log(nsSocket.rooms);
             const roomToLeave = Object.keys(nsSocket.rooms)[1];
             nsSocket.leave(roomToLeave);
             updateUsersInRoom(namespace, roomToLeave)
@@ -56,12 +62,12 @@ namespaces.forEach((namespace) => {
         })
         nsSocket.on('newMessageToServer', (msg) => {
             const fullMsg = {
-                text: msg.text,
-                time: Date.now(),
-                username: username,
-                avatar: 'https://via.placeholder.com/30'
-            }
-            console.log('fullMsg : ', fullMsg)
+                    text: msg.text,
+                    time: Date.now(),
+                    username: username,
+                    avatar: 'https://via.placeholder.com/30'
+                }
+                // console.log('fullMsg : ', fullMsg)
                 // Send this message to ALL the sockets that are in the room that THIS socket is in.
                 // how can we find out what rooms THIS socket is in?
                 // console.log(nsSocket.rooms)
@@ -74,7 +80,7 @@ namespaces.forEach((namespace) => {
                     return room.roomTitle === roomTitle;
                 })
                 // console.log("The room object that we made that matches this NS room is...")
-            console.log('nsRoom es : ', nsRoom);
+                // console.log('nsRoom es : ', nsRoom);
             nsRoom.addMessage(fullMsg);
             io.of(namespace.endpoint).to(roomTitle).emit('messageToClients', fullMsg)
         })
