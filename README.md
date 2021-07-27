@@ -6,4 +6,4 @@ Aplicacion que permite chatear entre personas
 
 - npm i
 - npm start
-- Ir al navegador y poner localhost:9000/chat.html
+- Ir al navegador y poner localhost:9000
