@@ -2,8 +2,8 @@
 
 Aplicacion que permite chatear entre personas
 
-- Para ejecutar
+Para ejecutar:
 
-- npm i
-- npm start
-- Ir al navegador y poner localhost:9000
+- Instalar modulos de node con 'npm i'
+- Levantar el proyecto : 'npm start'
+- Ir al navegador y acceder a localhost:9000
