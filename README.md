@@ -1,6 +1,7 @@
 # Slider Chat
 
 Aplicacion que permite chatear entre personas
+---------------------------------------------
 
 Para ejecutar:
 
