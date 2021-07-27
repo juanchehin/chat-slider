@@ -1,38 +1,55 @@
-const express = require('express');
+const express = require('express'); // Creo el servidor express
 const app = express();
-const socketio = require('socket.io')
+const socketio = require('socket.io'); // Requiero sockets de la libreria
+const path = require('path');
+const router = express.Router();
 
-let namespaces = require('./data/namespaces');
-app.use(express.static(__dirname + '/public'));
+let namespaces = require('./data/namespaces'); // Cargo el espacio de nombres (desde namespaces.js)
+app.use(express.static(__dirname + '/views'));
+
+app.set('views', __dirname + '/views');
+app.engine('html', require('ejs').renderFile);
+
+app.set('view engine', 'ejs');
 
 const port = process.env.PORT || 9000;
 
+// Levanto el servidor
 expressServer = app.listen(port, '0.0.0.0', () => {
     console.log('El servidor esta funcionando en port ', port);
 });
 
+app.get('/', function(req, res) {
+    res.render('chat-layout.html');
+});
+
+// A socketio le asigno el 'srv', es decir el servidor http
+// Luego guardo esto en io
 const io = socketio(expressServer);
-
-
+// console.log('socket.handshake io : ', io)
 // io.on = io.of('/').on = io.sockets.on
 // io.emit = io.of('/').emit = io.sockets.emit
+
+// ==========================================
+// Espero por un 'emit' de tipo 'connection'
+// Cuando llega el mensaje, se dispara el 'callback'
+// ==========================================
 io.on('connection', (socket) => {
-    // console.log(socket.handshake)
-    // build an array to send back with the img and endpoing for each NS
+    // console.log('socket.handshake : ', socket.handshake)
+    // construya una matriz para enviar de vuelta con el img y endpoint para cada NS
     let nsData = namespaces.map((ns) => {
             return {
                 img: ns.img,
                 endpoint: ns.endpoint
             }
         })
-        // console.log(nsData)
-        // sned the nsData back to the client. We need to use socket, NOT io, because we want it to 
-        // go to just this client. 
+        // console.log(nsData) 
+        // Envio el nsData al cliente. Necesitamos usar socket, NO io, porque queremos que vaya solo a este cliente
     socket.emit('nsList', nsData);
 })
 
 
-// loop through each namespace and listen for a connection
+// Recorro cada espacio de nombre y escucho una conexion
 namespaces.forEach((namespace) => {
     // console.log('namespace es : ', namespace)
     // const thisNs = io.of(namespace.endpoint)

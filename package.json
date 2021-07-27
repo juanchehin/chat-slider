@@ -5,12 +5,14 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node slack.js"
+        "start": "nodemon slack.js"
     },
     "author": "Chehin Juan",
     "license": "ISC",
     "dependencies": {
+        "ejs": "^3.1.6",
         "express": "^4.16.4",
+        "nodemon": "^2.0.12",
         "socket.io": "^2.1.1"
     }
 }

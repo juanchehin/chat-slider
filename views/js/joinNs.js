@@ -1,3 +1,4 @@
+// Aqui puede ser '/mozilla' , '/wiki' o '/linux'
 function joinNs(endpoint) {
     if (nsSocket) {
         // check to see if nsSocket is actually a socket
@@ -35,7 +36,7 @@ function joinNs(endpoint) {
 
     })
     nsSocket.on('messageToClients', (msg) => {
-        console.log(msg)
+        // console.log(msg)
         const newMsg = buildHTML(msg);
         document.querySelector('#messages').innerHTML += newMsg
     })
